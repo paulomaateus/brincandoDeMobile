@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.Cursor;
 
 import objects.products;
 import objects.productsPack;
@@ -38,20 +39,63 @@ public class productsOp {
     }
 
     public long insertUnity (products product){
-        long id = db.insert(TABLE_UNITS, null, unityContentValue(product));
+        long result = db.insert(TABLE_UNITS, null, unityContentValue(product));
 
-        return id;
+        return result;
     }
 
     public long insertPack (productsPack product){
-        long id = db.insert(TABLE_PACKS, null, packContentValue(product));
+        long result = db.insert(TABLE_PACKS, null, packContentValue(product));
 
-        return id;
+        return result;
     }
 
-    public long deletePack(productsPack product){
-        return  0; //todo
+    public long deletePack(String id){
+        long result = db.delete(TABLE_PACKS, COLUMN_ID + " = ?",  new String[]{id});
+
+        return result;
     }
+
+
+    public long deleteUnity(String id){
+        long result = db.delete(TABLE_UNITS, COLUMN_ID + " = ?",  new String[]{id});
+
+        return result;
+    }
+
+    public long addPack (String id, int numberOfPacks){
+        String selectQuery = "SELECT * FROM " + TABLE_PACKS + " WHERE " + COLUMN_ID + " = ?";
+        Cursor row = db.rawQuery(selectQuery, new String[]{id});
+
+        productsPack product = new productsPack(row.getString(row.getColumnIndex(COLUMN_NAME)),
+                row.getDouble(row.getColumnIndex(COLUMN_BUY_PRICE)),
+                row.getDouble(row.getColumnIndex(COLUMN_SELL_PRICE)),
+                row.getInt(row.getColumnIndex(COLUMN_PACK_UNITS)),
+                row.getInt(row.getColumnIndex(COLUMN_AMOUNT)));
+
+        product.updateAmount(numberOfPacks);
+
+        long result = db.update(TABLE_PACKS, packContentValue(product), COLUMN_ID + " = ?",new String[]{id});
+
+        return result;
+    }
+
+    public long addUnity (String id, int numberOfUnits){
+        String selectQuery = "SELECT * FROM " + TABLE_UNITS + " WHERE " + COLUMN_ID + " = ?";
+        Cursor row = db.rawQuery(selectQuery, new String[]{id});
+
+        products product = new products(row.getString(row.getColumnIndex(COLUMN_NAME)),
+                row.getDouble(row.getColumnIndex(COLUMN_BUY_PRICE)),
+                row.getDouble(row.getColumnIndex(COLUMN_SELL_PRICE)),
+                row.getInt(row.getColumnIndex(COLUMN_AMOUNT)));
+
+        product.updateAmount(numberOfUnits);
+
+        long result = db.update(TABLE_UNITS, unityContentValue(product), COLUMN_ID + " = ?",new String[]{id});
+
+        return result;
+    }
+
     private ContentValues packContentValue(productsPack product){
         ContentValues cv = new ContentValues();
 

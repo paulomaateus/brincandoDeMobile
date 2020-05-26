@@ -20,6 +20,13 @@ public class products implements Cloneable {
         this.sellPrice = sellPrice;
     }
 
+    public products(String name, double buyPrice, double sellPrice, int amout) {
+        this.name = name;
+        this.buyPrice = buyPrice;
+        this.amount = amount;
+        this.sellPrice = sellPrice;
+    }
+
     public String getName() {
         return this.name;
     }

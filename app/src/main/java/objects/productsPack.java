@@ -7,6 +7,14 @@ public class productsPack extends products  {
         super(name,  buyPrice);
         this.units = units;
     }
+    public productsPack(String name, double buyPrice, double sellPrice, int units) {
+        super(name,  buyPrice, sellPrice);
+        this.units = units;
+    }
+    public productsPack(String name, double buyPrice, double sellPrice,  int units, int amount) {
+        super(name,  buyPrice, sellPrice, amount);
+        this.units = units;
+    }
 
     public int getAmountUnits() {
         return this.units;
